@@ -20,6 +20,10 @@ import androidx.core.content.ContextCompat;
 import java.util.List;
 import java.util.UUID;
 
+
+//Andrey Kuzmin 3 de GTI
+// hola juan carlos
+
 public class MainActivity extends AppCompatActivity {
 
     // --------------------------------------------------------------
