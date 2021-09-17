@@ -22,6 +22,7 @@ import java.util.UUID;
 
 
 //Andrey Kuzmin 3 de GTI
+// hola juan carlos
 
 public class MainActivity extends AppCompatActivity {
 
