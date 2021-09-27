@@ -1,4 +1,4 @@
-package com.example.gti_3a_kuzminandrey_sprint0;
+package com.example.gti_3a_kuzminandrey_sprint0.Main;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
@@ -9,7 +9,6 @@ import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.ParcelUuid;
 import android.util.Log;
 import android.view.View;
 
@@ -17,8 +16,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.gti_3a_kuzminandrey_sprint0.R;
+
 import java.util.List;
-import java.util.UUID;
 
 
 //Andrey Kuzmin 3 de GTI
