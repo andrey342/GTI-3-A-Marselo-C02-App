@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "316035497276",
+    "project_id": "gti-3a-kuzminandrey-sprint0",
+    "storage_bucket": "gti-3a-kuzminandrey-sprint0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:316035497276:android:64cc9375f610c0db5a3239",
+        "android_client_info": {
+          "package_name": "com.example.gti_3a_kuzminandrey_sprint0"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "316035497276-o07isqottjnh3f3d5lj27m1cvdmo9fsa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAftvRdK88eFY72x75w7t-KhgydfxlbJe4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "316035497276-o07isqottjnh3f3d5lj27m1cvdmo9fsa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
