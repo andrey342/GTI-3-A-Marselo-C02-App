@@ -23,10 +23,6 @@ import com.example.gti_3a_kuzminandrey_sprint0.R;
 
 import java.util.List;
 
-
-//Andrey Kuzmin 3 de GTI
-// hola juan carlos
-
 public class MainActivity extends AppCompatActivity {
 
     // --------------------------------------------------------------
