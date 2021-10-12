@@ -1,4 +1,4 @@
-package com.example.gti_3a_kuzminandrey_sprint0;
+package com.example.gti_3a_kuzminandrey_sprint0.Main;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
@@ -7,22 +7,21 @@ import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.ParcelUuid;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.gti_3a_kuzminandrey_sprint0.Main.Service.MainActivityService;
+import com.example.gti_3a_kuzminandrey_sprint0.R;
+
 import java.util.List;
-import java.util.UUID;
-
-
-//Andrey Kuzmin 3 de GTI
-// hola juan carlos
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothLeScanner elEscanner;
 
     private ScanCallback callbackDelEscaneo = null;
+
+    //layout palette
+    private Button btn_service;
 
     // --------------------------------------------------------------
     // --------------------------------------------------------------
@@ -193,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
         //this.buscarEsteDispositivoBTLE( Utilidades.stringToUUID( "EPSG-GTI-PROY-3A" ) );
 
         //this.buscarEsteDispositivoBTLE( "EPSG-GTI-PROY-3A" );
-        this.buscarEsteDispositivoBTLE( "fistro" );
+        this.buscarEsteDispositivoBTLE( "AusiasBM-GTI" );
 
     } // ()
 
@@ -255,11 +257,23 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //findByid
+        btn_service=findViewById(R.id.btn_activar_service);
+
         Log.d(ETIQUETA_LOG, " onCreate(): empieza ");
 
         inicializarBlueTooth();
 
         Log.d(ETIQUETA_LOG, " onCreate(): termina ");
+
+
+        btn_service.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, MainActivityService.class);
+                startActivity(intent);
+            }
+        });
 
     } // onCreate()
 
