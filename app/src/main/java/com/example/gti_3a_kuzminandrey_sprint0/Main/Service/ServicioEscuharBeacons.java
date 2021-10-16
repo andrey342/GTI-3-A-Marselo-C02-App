@@ -178,7 +178,7 @@ public class ServicioEscuharBeacons extends IntentService {
         Log.d(ETIQUETA_LOG, " buscarTodosLosDispositivosBTL(): empezamos a escanear ");
 
         //filtro por nombre de beacon
-        ScanFilter sf = new ScanFilter.Builder().setDeviceName( "josej" ).build();
+        ScanFilter sf = new ScanFilter.Builder().setDeviceName( "Andrey-Kuzmin-G3A" ).build();
         List<ScanFilter> filters = new ArrayList<>();
         ScanSettings.Builder scan = new ScanSettings.Builder();
         filters.add(sf);
@@ -225,11 +225,15 @@ public class ServicioEscuharBeacons extends IntentService {
         Log.d(ETIQUETA_LOG, " txPower  = " + Integer.toHexString(tib.getTxPower()) + " ( " + tib.getTxPower() + " )");
         Log.d(ETIQUETA_LOG, " ****************************************************");
 
-
-        FirebaseLogica firebaseLogica= new FirebaseLogica();
-        firebaseLogica.guardarMedicion(1, Utilidades.bytesToInt(tib.getMinor()) ,1, 1000.4 , 2323.6);
+        //call method
+        nuevaMedicion(1, Utilidades.bytesToInt(tib.getMinor()) ,1, 1000.4 , 2323.6);
 
     } // ()
+
+    private void nuevaMedicion(int id, int lectura, int user_id, double latX, double latY){
+        FirebaseLogica firebaseLogica= new FirebaseLogica();
+        firebaseLogica.guardarMedicion(id, lectura ,user_id, latX , latY);
+    }
 
     // --------------------------------------------------------------
     // --------------------------------------------------------------
