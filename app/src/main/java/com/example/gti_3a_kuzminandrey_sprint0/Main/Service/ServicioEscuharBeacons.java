@@ -18,8 +18,10 @@ import com.example.gti_3a_kuzminandrey_sprint0.Main.Logica.FirebaseLogica;
 import com.example.gti_3a_kuzminandrey_sprint0.Main.POJO.Medicion;
 import com.example.gti_3a_kuzminandrey_sprint0.Main.TramaIBeacon;
 import com.example.gti_3a_kuzminandrey_sprint0.Main.Utilidades;
+import com.google.firebase.Timestamp;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ServicioEscuharBeacons extends IntentService {
@@ -224,10 +226,8 @@ public class ServicioEscuharBeacons extends IntentService {
         Log.d(ETIQUETA_LOG, " ****************************************************");
 
 
-        Medicion medicion=new Medicion(1,"", Utilidades.bytesToInt(tib.getMinor()) ,1, 1000.4 , 2323.6 );
-
         FirebaseLogica firebaseLogica= new FirebaseLogica();
-        firebaseLogica.AddMedicion(medicion);
+        firebaseLogica.guardarMedicion(1, Utilidades.bytesToInt(tib.getMinor()) ,1, 1000.4 , 2323.6);
 
     } // ()
 

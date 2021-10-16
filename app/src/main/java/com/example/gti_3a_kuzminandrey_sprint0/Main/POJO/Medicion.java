@@ -1,8 +1,9 @@
 package com.example.gti_3a_kuzminandrey_sprint0.Main.POJO;
 
+import com.google.firebase.Timestamp;
 public class Medicion {
     private int id;
-    private String fecha;
+    private Timestamp fecha;
     private int lectura;
     private int user_id;
     private double latX;
@@ -10,7 +11,7 @@ public class Medicion {
 
     public Medicion() { }
 
-    public Medicion(int id, String fecha, int lectura, int user_id, double latX, double latY) {
+    public Medicion(int id, Timestamp fecha, int lectura, int user_id, double latX, double latY) {
         this.id = id;
         this.fecha = fecha;
         this.lectura = lectura;
@@ -19,7 +20,7 @@ public class Medicion {
         this.latY = latY;
     }
 
-    public Medicion(String fecha, int lectura, double latX, double latY) {
+    public Medicion(Timestamp fecha, int lectura, double latX, double latY) {
         this.fecha = fecha;
         this.lectura = lectura;
         this.latX = latX;
@@ -36,11 +37,11 @@ public class Medicion {
         this.id = id;
     }
 
-    public String getFecha() {
+    public Timestamp getFecha() {
         return fecha;
     }
 
-    public void setFecha(String fecha) {
+    public void setFecha(Timestamp fecha) {
         this.fecha = fecha;
     }
 
