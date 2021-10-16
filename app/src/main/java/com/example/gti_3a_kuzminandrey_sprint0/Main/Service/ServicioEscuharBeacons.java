@@ -6,15 +6,20 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
+import android.bluetooth.le.ScanSettings;
 import android.content.Intent;
 import android.util.Log;
 
 import static android.app.Service.START_STICKY;
 
+import com.example.gti_3a_kuzminandrey_sprint0.Main.Logica.FirebaseLogica;
+import com.example.gti_3a_kuzminandrey_sprint0.Main.POJO.Medicion;
 import com.example.gti_3a_kuzminandrey_sprint0.Main.TramaIBeacon;
 import com.example.gti_3a_kuzminandrey_sprint0.Main.Utilidades;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ServicioEscuharBeacons extends IntentService {
@@ -170,7 +175,12 @@ public class ServicioEscuharBeacons extends IntentService {
 
         Log.d(ETIQUETA_LOG, " buscarTodosLosDispositivosBTL(): empezamos a escanear ");
 
-        this.elEscanner.startScan( this.callbackDelEscaneo);
+        //filtro por nombre de beacon
+        ScanFilter sf = new ScanFilter.Builder().setDeviceName( "josej" ).build();
+        List<ScanFilter> filters = new ArrayList<>();
+        ScanSettings.Builder scan = new ScanSettings.Builder();
+        filters.add(sf);
+        this.elEscanner.startScan(filters, scan.build(), callbackDelEscaneo);
 
     } // ()
 
@@ -187,13 +197,6 @@ public class ServicioEscuharBeacons extends IntentService {
         Log.d(ETIQUETA_LOG, " ****************************************************");
         Log.d(ETIQUETA_LOG, " nombre = " + bluetoothDevice.getName());
         Log.d(ETIQUETA_LOG, " toString = " + bluetoothDevice.toString());
-
-        /*
-        ParcelUuid[] puuids = bluetoothDevice.getUuids();
-        if ( puuids.length >= 1 ) {
-            //Log.d(ETIQUETA_LOG, " uuid = " + puuids[0].getUuid());
-           // Log.d(ETIQUETA_LOG, " uuid = " + puuids[0].toString());
-        }*/
 
         Log.d(ETIQUETA_LOG, " dirección = " + bluetoothDevice.getAddress());
         Log.d(ETIQUETA_LOG, " rssi = " + rssi );
@@ -219,6 +222,12 @@ public class ServicioEscuharBeacons extends IntentService {
                 + Utilidades.bytesToInt(tib.getMinor()) + " ) ");
         Log.d(ETIQUETA_LOG, " txPower  = " + Integer.toHexString(tib.getTxPower()) + " ( " + tib.getTxPower() + " )");
         Log.d(ETIQUETA_LOG, " ****************************************************");
+
+
+        Medicion medicion=new Medicion(1,"", Utilidades.bytesToInt(tib.getMinor()) ,1, 1000.4 , 2323.6 );
+
+        FirebaseLogica firebaseLogica= new FirebaseLogica();
+        firebaseLogica.AddMedicion(medicion);
 
     } // ()
 
