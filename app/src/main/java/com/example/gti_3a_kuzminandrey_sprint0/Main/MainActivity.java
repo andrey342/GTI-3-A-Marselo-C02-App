@@ -19,6 +19,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.gti_3a_kuzminandrey_sprint0.Main.Service.MainActivityService;
+import com.example.gti_3a_kuzminandrey_sprint0.Main.Service.ServicioEscuharBeacons;
 import com.example.gti_3a_kuzminandrey_sprint0.R;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     // --------------------------------------------------------------
     // --------------------------------------------------------------
     private static final String ETIQUETA_LOG = ">>>>";
+    private Intent elIntentDelServicio = null;
 
     private static final int CODIGO_PETICION_PERMISOS = 11223344;
 
@@ -38,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private ScanCallback callbackDelEscaneo = null;
 
     //layout palette
-    private Button btn_service;
+    private Button btn_dengue;
 
     // --------------------------------------------------------------
     // --------------------------------------------------------------
@@ -104,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(ETIQUETA_LOG, " bytes = " + new String(bytes));
         Log.d(ETIQUETA_LOG, " bytes (" + bytes.length + ") = " + Utilidades.bytesToHexString(bytes));
 
-        TramaIBeacon tib = new TramaIBeacon(bytes);
+        TramaIBeacon tib = new TramaIBeacon(bytes); //11 c02 12 temperatura
 
         Log.d(ETIQUETA_LOG, " ----------------------------------------------------");
         Log.d(ETIQUETA_LOG, " prefijo  = " + Utilidades.bytesToHexString(tib.getPrefijo()));
@@ -128,12 +130,9 @@ public class MainActivity extends AppCompatActivity {
     // --------------------------------------------------------------
     // --------------------------------------------------------------
     private void buscarEsteDispositivoBTLE(final String dispositivoBuscado ) {
-        Log.d(ETIQUETA_LOG, " buscarEsteDispositivoBTLE(): empieza ");
-
-        Log.d(ETIQUETA_LOG, "  buscarEsteDispositivoBTLE(): instalamos scan callback ");
-
-
-        // super.onScanResult(ScanSettings.SCAN_MODE_LOW_LATENCY, result); para ahorro de energía
+        Log.d(ETIQUETA_LOG, "  ---------------------------------------- ");
+        Log.d(ETIQUETA_LOG, " BUSCANDO DISPOSITIVO POR : NOMBRE ");
+        Log.d(ETIQUETA_LOG, "  ---------------------------------------- ");
 
         this.callbackDelEscaneo = new ScanCallback() {
             @Override
@@ -195,7 +194,9 @@ public class MainActivity extends AppCompatActivity {
         //this.buscarEsteDispositivoBTLE( Utilidades.stringToUUID( "EPSG-GTI-PROY-3A" ) );
 
         //this.buscarEsteDispositivoBTLE( "EPSG-GTI-PROY-3A" );
-        this.buscarEsteDispositivoBTLE( "AusiasBM-GTI" );
+        this.buscarEsteDispositivoBTLE( "josej" );
+
+        botonDetenerServicioPulsado(v); //parar servicio
 
     } // ()
 
@@ -206,72 +207,48 @@ public class MainActivity extends AppCompatActivity {
         this.detenerBusquedaDispositivosBTLE();
     } // ()
 
-    // --------------------------------------------------------------
-    // --------------------------------------------------------------
-    private void inicializarBlueTooth() {
-        Log.d(ETIQUETA_LOG, " inicializarBlueTooth(): obtenemos adaptador BT ");
-
-        BluetoothAdapter bta = BluetoothAdapter.getDefaultAdapter();
-
-        Log.d(ETIQUETA_LOG, " inicializarBlueTooth(): habilitamos adaptador BT ");
-
-        bta.enable();
-
-        Log.d(ETIQUETA_LOG, " inicializarBlueTooth(): habilitado =  " + bta.isEnabled() );
-
-        Log.d(ETIQUETA_LOG, " inicializarBlueTooth(): estado =  " + bta.getState() );
-
-        Log.d(ETIQUETA_LOG, " inicializarBlueTooth(): obtenemos escaner btle ");
-
-        this.elEscanner = bta.getBluetoothLeScanner();
-
-        if ( this.elEscanner == null ) {
-            Log.d(ETIQUETA_LOG, " inicializarBlueTooth(): Socorro: NO hemos obtenido escaner btle  !!!!");
-
-        }
-
-        Log.d(ETIQUETA_LOG, " inicializarBlueTooth(): voy a perdir permisos (si no los tuviera) !!!!");
-
-        if (
-                ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED
-                        || ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED
-                        || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-        )
-        {
-            ActivityCompat.requestPermissions(
-                    MainActivity.this,
-                    new String[]{Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.ACCESS_FINE_LOCATION},
-                    CODIGO_PETICION_PERMISOS);
-        }
-        else {
-            Log.d(ETIQUETA_LOG, " inicializarBlueTooth(): parece que YA tengo los permisos necesarios !!!!");
-
-        }
-    } // ()
-
-
-    // --------------------------------------------------------------
-    // --------------------------------------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         //findByid
-        btn_service=findViewById(R.id.btn_activar_service);
+        btn_dengue=findViewById(R.id.btn_dengue);
 
         Log.d(ETIQUETA_LOG, " onCreate(): empieza ");
 
-        inicializarBlueTooth();
-
         Log.d(ETIQUETA_LOG, " onCreate(): termina ");
 
-
-        btn_service.setOnClickListener(new View.OnClickListener() {
+        btn_dengue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, MainActivityService.class);
-                startActivity(intent);
+                if (
+                        ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED
+                                || ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED
+                                || ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                )
+                {
+                    ActivityCompat.requestPermissions(
+                            MainActivity.this,
+                            new String[]{Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.ACCESS_FINE_LOCATION},
+                            CODIGO_PETICION_PERMISOS);
+                }
+                else {
+                    Log.d(ETIQUETA_LOG, " inicializarBlueTooth(): parece que YA tengo los permisos necesarios !!!!");
+
+                    if ( elIntentDelServicio != null ) {
+                        // ya estaba arrancado
+                        return;
+                    }
+
+                    Log.d(ETIQUETA_LOG, " MainActivity.constructor : voy a arrancar el servicio");
+
+                    elIntentDelServicio = new Intent(getApplicationContext(), ServicioEscuharBeacons.class);
+
+                    elIntentDelServicio.putExtra("tiempoDeEspera", (long) 5000);
+                    startService( elIntentDelServicio );
+
+                }
             }
         });
 
@@ -301,5 +278,24 @@ public class MainActivity extends AppCompatActivity {
         }
         // Other 'case' lines to check for other
         // permissions this app might request.
+    } // ()
+
+
+    // ---------------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------------------------
+    public void botonDetenerServicioPulsado( View v ) {
+
+        if ( this.elIntentDelServicio == null ) {
+            // no estaba arrancado
+            return;
+        }
+
+        stopService( this.elIntentDelServicio );
+
+        this.elIntentDelServicio = null;
+
+        Log.d(ETIQUETA_LOG, " boton detener servicio Pulsado" );
+
+
     } // ()
 }
