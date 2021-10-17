@@ -1,4 +1,4 @@
-package com.example.gti_3a_kuzminandrey_sprint0.Main.Service;
+package com.example.gti_3a_kuzminandrey_sprint0.main.Service;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,7 +7,6 @@ import android.os.Bundle;
 import com.example.gti_3a_kuzminandrey_sprint0.R;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 

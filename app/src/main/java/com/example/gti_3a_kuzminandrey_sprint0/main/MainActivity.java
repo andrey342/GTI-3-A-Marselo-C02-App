@@ -1,7 +1,6 @@
-package com.example.gti_3a_kuzminandrey_sprint0.Main;
+package com.example.gti_3a_kuzminandrey_sprint0.main;
 
 import android.Manifest;
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
@@ -12,15 +11,14 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.example.gti_3a_kuzminandrey_sprint0.Main.Service.MainActivityService;
-import com.example.gti_3a_kuzminandrey_sprint0.Main.Service.ServicioEscuharBeacons;
+import com.example.gti_3a_kuzminandrey_sprint0.main.Service.ServicioEscuharBeacons;
 import com.example.gti_3a_kuzminandrey_sprint0.R;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.List;
 
@@ -40,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
     private ScanCallback callbackDelEscaneo = null;
 
     //layout palette
-    private Button btn_dengue;
+    private MaterialButton btn_play;
+    private MaterialButton btn_stop;
 
     // --------------------------------------------------------------
     // --------------------------------------------------------------
@@ -167,59 +166,16 @@ public class MainActivity extends AppCompatActivity {
         this.elEscanner.startScan( this.callbackDelEscaneo );
     } // ()
 
-    // --------------------------------------------------------------
-    // --------------------------------------------------------------
-    private void detenerBusquedaDispositivosBTLE() {
-
-        if ( this.callbackDelEscaneo == null ) {
-            return;
-        }
-
-        this.elEscanner.stopScan( this.callbackDelEscaneo );
-        this.callbackDelEscaneo = null;
-
-    } // ()
-
-    // --------------------------------------------------------------
-    // --------------------------------------------------------------
-    public void botonBuscarDispositivosBTLEPulsado( View v ) {
-        Log.d(ETIQUETA_LOG, " boton buscar dispositivos BTLE Pulsado" );
-        this.buscarTodosLosDispositivosBTLE();
-    } // ()
-
-    // --------------------------------------------------------------
-    // --------------------------------------------------------------
-    public void botonBuscarNuestroDispositivoBTLEPulsado( View v ) {
-        Log.d(ETIQUETA_LOG, " boton nuestro dispositivo BTLE Pulsado" );
-        //this.buscarEsteDispositivoBTLE( Utilidades.stringToUUID( "EPSG-GTI-PROY-3A" ) );
-
-        //this.buscarEsteDispositivoBTLE( "EPSG-GTI-PROY-3A" );
-        this.buscarEsteDispositivoBTLE( "josej" );
-
-        botonDetenerServicioPulsado(v); //parar servicio
-
-    } // ()
-
-    // --------------------------------------------------------------
-    // --------------------------------------------------------------
-    public void botonDetenerBusquedaDispositivosBTLEPulsado( View v ) {
-        Log.d(ETIQUETA_LOG, " boton detener busqueda dispositivos BTLE Pulsado" );
-        this.detenerBusquedaDispositivosBTLE();
-    } // ()
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         //findByid
-        btn_dengue=findViewById(R.id.btn_dengue);
+        btn_play =findViewById(R.id.btn_play_service);
+        btn_stop =findViewById(R.id.btn_stop_service);
 
-        Log.d(ETIQUETA_LOG, " onCreate(): empieza ");
-
-        Log.d(ETIQUETA_LOG, " onCreate(): termina ");
-
-        btn_dengue.setOnClickListener(new View.OnClickListener() {
+        btn_play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (
@@ -249,6 +205,13 @@ public class MainActivity extends AppCompatActivity {
                     startService( elIntentDelServicio );
 
                 }
+            }
+        });
+
+        btn_stop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                botonDetenerServicioPulsado(v);
             }
         });
 

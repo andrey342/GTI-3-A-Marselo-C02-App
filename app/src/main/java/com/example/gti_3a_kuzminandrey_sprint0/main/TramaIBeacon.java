@@ -1,5 +1,5 @@
 
-package com.example.gti_3a_kuzminandrey_sprint0.Main;
+package com.example.gti_3a_kuzminandrey_sprint0.main;
 
 import java.util.Arrays;
 
