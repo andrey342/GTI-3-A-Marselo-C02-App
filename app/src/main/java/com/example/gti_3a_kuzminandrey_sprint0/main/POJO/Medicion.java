@@ -1,4 +1,4 @@
-package com.example.gti_3a_kuzminandrey_sprint0.Main.POJO;
+package com.example.gti_3a_kuzminandrey_sprint0.main.POJO;
 
 import com.google.firebase.Timestamp;
 public class Medicion {

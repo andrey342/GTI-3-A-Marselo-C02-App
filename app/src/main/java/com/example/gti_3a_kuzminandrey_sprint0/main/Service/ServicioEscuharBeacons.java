@@ -1,7 +1,6 @@
-package com.example.gti_3a_kuzminandrey_sprint0.Main.Service;
+package com.example.gti_3a_kuzminandrey_sprint0.main.Service;
 
 import android.app.IntentService;
-import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.BluetoothLeScanner;
@@ -12,16 +11,11 @@ import android.bluetooth.le.ScanSettings;
 import android.content.Intent;
 import android.util.Log;
 
-import static android.app.Service.START_STICKY;
-
-import com.example.gti_3a_kuzminandrey_sprint0.Main.Logica.FirebaseLogica;
-import com.example.gti_3a_kuzminandrey_sprint0.Main.POJO.Medicion;
-import com.example.gti_3a_kuzminandrey_sprint0.Main.TramaIBeacon;
-import com.example.gti_3a_kuzminandrey_sprint0.Main.Utilidades;
-import com.google.firebase.Timestamp;
+import com.example.gti_3a_kuzminandrey_sprint0.main.Logica.FirebaseLogica;
+import com.example.gti_3a_kuzminandrey_sprint0.main.TramaIBeacon;
+import com.example.gti_3a_kuzminandrey_sprint0.main.Utilidades;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ServicioEscuharBeacons extends IntentService {
@@ -64,6 +58,9 @@ public class ServicioEscuharBeacons extends IntentService {
             return;
         }
 
+        this.elEscanner.stopScan( this.callbackDelEscaneo );
+        this.callbackDelEscaneo = null;
+
         this.seguir = false;
         this.stopSelf();
 
@@ -80,6 +77,7 @@ public class ServicioEscuharBeacons extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
+        inicializarBlueTooth(); //init bluetooth
         this.tiempoDeEspera = intent.getLongExtra("tiempoDeEspera", /* default */ 50000);
         this.seguir = true;
 
@@ -89,17 +87,15 @@ public class ServicioEscuharBeacons extends IntentService {
 
         Log.d(ETIQUETA_LOG, " ServicioEscucharBeacons.onHandleIntent: empieza : thread=" + Thread.currentThread().getId() );
 
+        //Init busqueda de beacons
+        buscarTodosLosDispositivosBTLE();
+
+
         try {
 
             while ( this.seguir ) {
                 Thread.sleep(tiempoDeEspera);
                 Log.d(ETIQUETA_LOG, " ServicioEscucharBeacons.onHandleIntent: tras la espera:  " + contador );
-
-                //Init busqueda de beacons
-                inicializarBlueTooth(); //init bluetooth
-
-                buscarTodosLosDispositivosBTLE();
-
                 contador++;
             }
 
@@ -218,7 +214,7 @@ public class ServicioEscuharBeacons extends IntentService {
                 + tib.getiBeaconLength() + " ) ");
         Log.d(ETIQUETA_LOG, " uuid  = " + Utilidades.bytesToHexString(tib.getUUID()));
         Log.d(ETIQUETA_LOG, " uuid  = " + Utilidades.bytesToString(tib.getUUID()));
-        Log.d(ETIQUETA_LOG, " major  = " + Utilidades.bytesToHexString(tib.getMajor()) + "( "
+        Log.d(ETIQUETA_LOG, " major  = " + Utilidades.bytesToHexString(tib.getMajor()) + "( DENGUEEEEEEE -> "
                 + Utilidades.bytesToInt(tib.getMajor()) + " ) ");
         Log.d(ETIQUETA_LOG, " minor  = " + Utilidades.bytesToHexString(tib.getMinor()) + "( "
                 + Utilidades.bytesToInt(tib.getMinor()) + " ) ");
@@ -226,13 +222,22 @@ public class ServicioEscuharBeacons extends IntentService {
         Log.d(ETIQUETA_LOG, " ****************************************************");
 
         //call method
-        nuevaMedicion(1, Utilidades.bytesToInt(tib.getMinor()) ,1, 1000.4 , 2323.6);
+        nuevaMedicion(1, Utilidades.bytesToInt(tib.getMajor()) ,  Utilidades.bytesToInt(tib.getMinor()) ,1, 1000.4 , 2323.6);
 
-    } // ()
+    } //
 
-    private void nuevaMedicion(int id, int lectura, int user_id, double latX, double latY){
+    private void nuevaMedicion(int id, int tipo , int lectura, int user_id, double latX, double latY){
+
         FirebaseLogica firebaseLogica= new FirebaseLogica();
-        firebaseLogica.guardarMedicion(id, lectura ,user_id, latX , latY);
+        String collection = "";
+
+        if(tipo == 11){ //C02
+            collection="Mediciones CO2";
+        }else if (tipo == 12){ //TEMPERATURA
+            collection="Mediciones temperatura";
+        }
+
+        firebaseLogica.guardarMedicion(collection, id, lectura ,user_id, latX , latY);
     }
 
     // --------------------------------------------------------------
