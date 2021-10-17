@@ -11,15 +11,23 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.gti_3a_kuzminandrey_sprint0.main.Logica.FirebaseLogica;
+import com.example.gti_3a_kuzminandrey_sprint0.main.POJO.Medicion;
 import com.example.gti_3a_kuzminandrey_sprint0.main.Service.ServicioEscuharBeacons;
 import com.example.gti_3a_kuzminandrey_sprint0.R;
+import com.example.gti_3a_kuzminandrey_sprint0.main.adapters.AdapterRvMediciones;
 import com.google.android.material.button.MaterialButton;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,131 +48,12 @@ public class MainActivity extends AppCompatActivity {
     //layout palette
     private MaterialButton btn_play;
     private MaterialButton btn_stop;
-
-    // --------------------------------------------------------------
-    // --------------------------------------------------------------
-    private void buscarTodosLosDispositivosBTLE() {
-        Log.d(ETIQUETA_LOG, " buscarTodosLosDispositivosBTL(): empieza ");
-
-        Log.d(ETIQUETA_LOG, " buscarTodosLosDispositivosBTL(): instalamos scan callback ");
-
-        this.callbackDelEscaneo = new ScanCallback() {
-            @Override
-            public void onScanResult( int callbackType, ScanResult resultado ) {
-                super.onScanResult(callbackType, resultado);
-                Log.d(ETIQUETA_LOG, " buscarTodosLosDispositivosBTL(): onScanResult() ");
-
-                mostrarInformacionDispositivoBTLE( resultado );
-            }
-
-            @Override
-            public void onBatchScanResults(List<ScanResult> results) {
-                super.onBatchScanResults(results);
-                Log.d(ETIQUETA_LOG, " buscarTodosLosDispositivosBTL(): onBatchScanResults() ");
-
-            }
-
-            @Override
-            public void onScanFailed(int errorCode) {
-                super.onScanFailed(errorCode);
-                Log.d(ETIQUETA_LOG, " buscarTodosLosDispositivosBTL(): onScanFailed() ");
-
-            }
-        };
-
-        Log.d(ETIQUETA_LOG, " buscarTodosLosDispositivosBTL(): empezamos a escanear ");
-
-        this.elEscanner.startScan( this.callbackDelEscaneo);
-
-    } // ()
-
-    // --------------------------------------------------------------
-    // --------------------------------------------------------------
-    private void mostrarInformacionDispositivoBTLE( ScanResult resultado ) {
-
-        BluetoothDevice bluetoothDevice = resultado.getDevice();
-        byte[] bytes = resultado.getScanRecord().getBytes();
-        int rssi = resultado.getRssi();
-
-        Log.d(ETIQUETA_LOG, " ****************************************************");
-        Log.d(ETIQUETA_LOG, " ****** DISPOSITIVO DETECTADO BTLE ****************** ");
-        Log.d(ETIQUETA_LOG, " ****************************************************");
-        Log.d(ETIQUETA_LOG, " nombre = " + bluetoothDevice.getName());
-        Log.d(ETIQUETA_LOG, " toString = " + bluetoothDevice.toString());
-
-        /*
-        ParcelUuid[] puuids = bluetoothDevice.getUuids();
-        if ( puuids.length >= 1 ) {
-            //Log.d(ETIQUETA_LOG, " uuid = " + puuids[0].getUuid());
-           // Log.d(ETIQUETA_LOG, " uuid = " + puuids[0].toString());
-        }*/
-
-        Log.d(ETIQUETA_LOG, " dirección = " + bluetoothDevice.getAddress());
-        Log.d(ETIQUETA_LOG, " rssi = " + rssi );
-
-        Log.d(ETIQUETA_LOG, " bytes = " + new String(bytes));
-        Log.d(ETIQUETA_LOG, " bytes (" + bytes.length + ") = " + Utilidades.bytesToHexString(bytes));
-
-        TramaIBeacon tib = new TramaIBeacon(bytes); //11 c02 12 temperatura
-
-        Log.d(ETIQUETA_LOG, " ----------------------------------------------------");
-        Log.d(ETIQUETA_LOG, " prefijo  = " + Utilidades.bytesToHexString(tib.getPrefijo()));
-        Log.d(ETIQUETA_LOG, "          advFlags = " + Utilidades.bytesToHexString(tib.getAdvFlags()));
-        Log.d(ETIQUETA_LOG, "          advHeader = " + Utilidades.bytesToHexString(tib.getAdvHeader()));
-        Log.d(ETIQUETA_LOG, "          companyID = " + Utilidades.bytesToHexString(tib.getCompanyID()));
-        Log.d(ETIQUETA_LOG, "          iBeacon type = " + Integer.toHexString(tib.getiBeaconType()));
-        Log.d(ETIQUETA_LOG, "          iBeacon length 0x = " + Integer.toHexString(tib.getiBeaconLength()) + " ( "
-                + tib.getiBeaconLength() + " ) ");
-        Log.d(ETIQUETA_LOG, " uuid  = " + Utilidades.bytesToHexString(tib.getUUID()));
-        Log.d(ETIQUETA_LOG, " uuid  = " + Utilidades.bytesToString(tib.getUUID()));
-        Log.d(ETIQUETA_LOG, " major  = " + Utilidades.bytesToHexString(tib.getMajor()) + "( "
-                + Utilidades.bytesToInt(tib.getMajor()) + " ) ");
-        Log.d(ETIQUETA_LOG, " minor  = " + Utilidades.bytesToHexString(tib.getMinor()) + "( "
-                + Utilidades.bytesToInt(tib.getMinor()) + " ) ");
-        Log.d(ETIQUETA_LOG, " txPower  = " + Integer.toHexString(tib.getTxPower()) + " ( " + tib.getTxPower() + " )");
-        Log.d(ETIQUETA_LOG, " ****************************************************");
-
-    } // ()
-
-    // --------------------------------------------------------------
-    // --------------------------------------------------------------
-    private void buscarEsteDispositivoBTLE(final String dispositivoBuscado ) {
-        Log.d(ETIQUETA_LOG, "  ---------------------------------------- ");
-        Log.d(ETIQUETA_LOG, " BUSCANDO DISPOSITIVO POR : NOMBRE ");
-        Log.d(ETIQUETA_LOG, "  ---------------------------------------- ");
-
-        this.callbackDelEscaneo = new ScanCallback() {
-            @Override
-            public void onScanResult( int callbackType, ScanResult resultado ) {
-                super.onScanResult(callbackType, resultado);
-                Log.d(ETIQUETA_LOG, "  buscarEsteDispositivoBTLE(): onScanResult() ");
-
-                mostrarInformacionDispositivoBTLE( resultado );
-            }
-
-            @Override
-            public void onBatchScanResults(List<ScanResult> results) {
-                super.onBatchScanResults(results);
-                Log.d(ETIQUETA_LOG, "  buscarEsteDispositivoBTLE(): onBatchScanResults() ");
-
-            }
-
-            @Override
-            public void onScanFailed(int errorCode) {
-                super.onScanFailed(errorCode);
-                Log.d(ETIQUETA_LOG, "  buscarEsteDispositivoBTLE(): onScanFailed() ");
-
-            }
-        };
-
-        ScanFilter sf = new ScanFilter.Builder().setDeviceName( dispositivoBuscado ).build();
-
-        Log.d(ETIQUETA_LOG, "  buscarEsteDispositivoBTLE(): empezamos a escanear buscando: " + dispositivoBuscado );
-        //Log.d(ETIQUETA_LOG, "  buscarEsteDispositivoBTLE(): empezamos a escanear buscando: " + dispositivoBuscado
-        //      + " -> " + Utilidades.stringToUUID( dispositivoBuscado ) );
-
-        this.elEscanner.startScan( this.callbackDelEscaneo );
-    } // ()
+    private TextView txt_temp;
+    private TextView txt_co2;
+    private RecyclerView rv_mediciones;
+    private List<Medicion> medicionList=new ArrayList<>();
+    private AdapterRvMediciones adapterRvMediciones;
+    FirebaseLogica firebaseLogica;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,6 +63,29 @@ public class MainActivity extends AppCompatActivity {
         //findByid
         btn_play =findViewById(R.id.btn_play_service);
         btn_stop =findViewById(R.id.btn_stop_service);
+        txt_temp=findViewById(R.id.txt_temp);
+        txt_co2=findViewById(R.id.txt_co2);
+        rv_mediciones=findViewById(R.id.rv_mediciones);
+
+        firebaseLogica=new FirebaseLogica();
+        firebaseLogica.obtenerUltimasMediciones(new FirebaseLogica.obtenerUltimasMedicionesCallBack() {
+            @Override
+            public void onCompletedC02(int C02) {
+                txt_co2.setText(String.valueOf(C02));
+            }
+
+            @Override
+            public void onCompletedTemperatura(int temperatura) {
+                txt_temp.setText(String.valueOf(temperatura));
+            }
+        });
+
+        //rv mediciones
+        //config rv
+        initRvMediciones();
+        getItemMediciones();
+
+
 
         btn_play.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -217,6 +129,29 @@ public class MainActivity extends AppCompatActivity {
 
     } // onCreate()
 
+
+    private void initRvMediciones(){
+        //defino que el rv no tenga fixed size
+        rv_mediciones.setHasFixedSize(false);
+        rv_mediciones.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+    }
+
+    private void getItemMediciones(){
+        //clear array
+        medicionList.clear();
+
+        firebaseLogica.obtenerTodasLasMediciones(new FirebaseLogica.obtenerTodasLasMedicionesCallBack() {
+            @Override
+            public void onCompleted(List<Medicion> mediciones) {
+                medicionList=mediciones;
+                adapterRvMediciones= new AdapterRvMediciones(medicionList, getApplicationContext());
+                rv_mediciones.setAdapter(adapterRvMediciones);
+
+
+            }
+        });
+    }
+
     // --------------------------------------------------------------
     // --------------------------------------------------------------
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
@@ -246,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
 
     // ---------------------------------------------------------------------------------------------
     // ---------------------------------------------------------------------------------------------
-    public void botonDetenerServicioPulsado( View v ) {
+    private void botonDetenerServicioPulsado( View v ) {
 
         if ( this.elIntentDelServicio == null ) {
             // no estaba arrancado
