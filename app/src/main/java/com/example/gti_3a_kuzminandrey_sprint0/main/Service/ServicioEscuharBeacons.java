@@ -242,8 +242,10 @@ public class ServicioEscuharBeacons extends IntentService {
             collection="Mediciones temperatura";
         }
 
-        //llamamos al metodo que guarda la medicion y le pasamos los datos
-        firebaseLogica.guardarMedicion(collection, id, lectura ,user_id, latX , latY);
+        if(!collection.equals("")){
+            //llamamos al metodo que guarda la medicion y le pasamos los datos
+            firebaseLogica.guardarMedicion(collection, id, lectura ,user_id, latX , latY);
+        }
     }
 } // class
 // -------------------------------------------------------------------------------------------------
