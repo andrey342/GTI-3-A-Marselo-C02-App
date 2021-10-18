@@ -18,27 +18,24 @@ import com.example.gti_3a_kuzminandrey_sprint0.main.Utilidades;
 import java.util.ArrayList;
 import java.util.List;
 
+// -----------------------------------------------------------------------------------
+// @author: Andrey Kuzmin
+// -----------------------------------------------------------------------------------
+
+//servicio que detecta beacons y llama a la logica para almacenar la medicion.
 public class ServicioEscuharBeacons extends IntentService {
 
-    // ---------------------------------------------------------------------------------------------
-    // ---------------------------------------------------------------------------------------------
+    //atributos
     private static final String ETIQUETA_LOG = ">>>>";
-
-    private static final int CODIGO_PETICION_PERMISOS = 11223344;
-
-    // --------------------------------------------------------------
-    // --------------------------------------------------------------
     private BluetoothLeScanner elEscanner;
-
     private ScanCallback callbackDelEscaneo = null;
-
-
     private long tiempoDeEspera = 10000;
-
     private boolean seguir = true;
 
-    // ---------------------------------------------------------------------------------------------
-    // ---------------------------------------------------------------------------------------------
+    /**
+     * La descripción de ServicioEscuharBeacons. Constructor.
+     *
+     */
     public ServicioEscuharBeacons(  ) {
         super("HelloIntentService");
 
@@ -46,82 +43,70 @@ public class ServicioEscuharBeacons extends IntentService {
 
     }
 
+    /**
+     *
+     * La descripción de onDestroy. Funcion por defecto de android studio. Detiene el servicio.
+     *
+     */
     public void onDestroy() {
 
-        Log.d(ETIQUETA_LOG, " ServicioEscucharBeacons.onDestroy() " );
-
-
         Log.d(ETIQUETA_LOG, " ServicioEscucharBeacons.parar() " );
-
 
         if ( this.seguir == false ) {
             return;
         }
-
         this.elEscanner.stopScan( this.callbackDelEscaneo );
         this.callbackDelEscaneo = null;
-
         this.seguir = false;
         this.stopSelf();
-
         Log.d(ETIQUETA_LOG, " ServicioEscucharBeacons.parar() : acaba " );
     }
 
-    // ---------------------------------------------------------------------------------------------
-    // ---------------------------------------------------------------------------------------------
+
     /**
      * The IntentService calls this method from the default worker thread with
      * the intent that started the service. When this method returns, IntentService
      * stops the service, as appropriate.
+    /**
+     * La descripción de onHandleIntent. Funcion por defecto, se llama al llamar el servicio.
+     *
+     * @param intent intent data que le pasamos al inicializar el servicio.
      */
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        inicializarBlueTooth(); //init bluetooth
+        //init bluetooth
+        inicializarBlueTooth();
         this.tiempoDeEspera = intent.getLongExtra("tiempoDeEspera", /* default */ 50000);
         this.seguir = true;
 
         // esto lo ejecuta un WORKER THREAD !
-
         long contador = 1;
-
-        Log.d(ETIQUETA_LOG, " ServicioEscucharBeacons.onHandleIntent: empieza : thread=" + Thread.currentThread().getId() );
 
         //Init busqueda de beacons
         buscarTodosLosDispositivosBTLE();
 
-
         try {
-
-            while ( this.seguir ) {
+            while ( this.seguir ) { //mientras esta permitido seguir
                 Thread.sleep(tiempoDeEspera);
                 Log.d(ETIQUETA_LOG, " ServicioEscucharBeacons.onHandleIntent: tras la espera:  " + contador );
                 contador++;
             }
 
-            Log.d(ETIQUETA_LOG, " ServicioEscucharBeacons.onHandleIntent : tarea terminada ( tras while(true) )" );
-
-
         } catch (InterruptedException e) {
             // Restore interrupt status.
-            Log.d(ETIQUETA_LOG, " ServicioEscucharBeacons.onHandleItent: problema con el thread");
-
             Thread.currentThread().interrupt();
         }
-
-        Log.d(ETIQUETA_LOG, " ServicioEscucharBeacons.onHandleItent: termina");
-
     }
 
-    // --------------------------------------------------------------
-    // --------------------------------------------------------------
+    /**
+     *
+     * La descripción de inicializarBlueTooth. Funcion que inicia el bluetooth
+     *
+     */
     private void inicializarBlueTooth() {
-        Log.d(ETIQUETA_LOG, " inicializarBlueTooth(): obtenemos adaptador BT ");
 
         BluetoothAdapter bta = BluetoothAdapter.getDefaultAdapter();
-
-        Log.d(ETIQUETA_LOG, " inicializarBlueTooth(): habilitamos adaptador BT ");
-
         bta.enable();
 
         Log.d(ETIQUETA_LOG, " inicializarBlueTooth(): habilitado =  " + bta.isEnabled() );
@@ -134,25 +119,23 @@ public class ServicioEscuharBeacons extends IntentService {
 
         if ( this.elEscanner == null ) {
             Log.d(ETIQUETA_LOG, " inicializarBlueTooth(): Socorro: NO hemos obtenido escaner btle  !!!!");
-
         }
 
         Log.d(ETIQUETA_LOG, " inicializarBlueTooth(): voy a perdir permisos (si no los tuviera) !!!!");
     } // ()
 
-    // --------------------------------------------------------------
-    // --------------------------------------------------------------
+    /**
+     * La descripción de buscarTodosLosDispositivosBTLE. Funcion que busca dispositivos beacons.
+     *
+     */
     private void buscarTodosLosDispositivosBTLE() {
         Log.d(ETIQUETA_LOG, " buscarTodosLosDispositivosBTL(): empieza ");
-
-        Log.d(ETIQUETA_LOG, " buscarTodosLosDispositivosBTL(): instalamos scan callback ");
 
         this.callbackDelEscaneo = new ScanCallback() {
             @Override
             public void onScanResult( int callbackType, ScanResult resultado ) {
                 super.onScanResult(callbackType, resultado);
-                Log.d(ETIQUETA_LOG, " buscarTodosLosDispositivosBTL(): onScanResult() ");
-
+                //mostramos info en el log y guardamos la medicion
                 mostrarInformacionDispositivoBTLE( resultado );
             }
 
@@ -171,19 +154,23 @@ public class ServicioEscuharBeacons extends IntentService {
             }
         };
 
-        Log.d(ETIQUETA_LOG, " buscarTodosLosDispositivosBTL(): empezamos a escanear ");
-
         //filtro por nombre de beacon
+        //los beacons que se escanean son pasados por este filtro para SOLO recuperar los beacons con un nombre especifico
         ScanFilter sf = new ScanFilter.Builder().setDeviceName( "Andrey-Kuzmin-G3A" ).build();
         List<ScanFilter> filters = new ArrayList<>();
         ScanSettings.Builder scan = new ScanSettings.Builder();
         filters.add(sf);
+        //le pasamos el filtro por nombre al scaneo
         this.elEscanner.startScan(filters, scan.build(), callbackDelEscaneo);
 
     } // ()
 
-    // --------------------------------------------------------------
-    // --------------------------------------------------------------
+    /**
+     * La descripción de mostrarInformacionDispositivoBTLE. Muestra informacion del beacon en el logcat
+     * y llama a la logica para almacenar la medicion.
+     *
+     * @param resultado Descripcion de param1.
+     */
     private void mostrarInformacionDispositivoBTLE( ScanResult resultado ) {
 
         BluetoothDevice bluetoothDevice = resultado.getDevice();
@@ -221,29 +208,43 @@ public class ServicioEscuharBeacons extends IntentService {
         Log.d(ETIQUETA_LOG, " txPower  = " + Integer.toHexString(tib.getTxPower()) + " ( " + tib.getTxPower() + " )");
         Log.d(ETIQUETA_LOG, " ****************************************************");
 
-        //call method
+        //llamamos al metodo que llama a la logica y le pasamos todos los datos necesarios de la medicion
         nuevaMedicion(1, Utilidades.bytesToInt(tib.getMajor()) ,  Utilidades.bytesToInt(tib.getMinor()) ,1, 1000.4 , 2323.6);
 
     } //
 
+
+    /**
+     * La descripción de nuevaMedicion. Funcion que recibe los datos de la medicion
+     * y llama a la logica para almacenar la medicion en Cloud Firestore.
+     *
+     * @param id id de la medicion.
+     * @param tipo tipo de medicion (11 es CO2 y 12 es temperatura)
+     * @param lectura lectura de la medicion.
+     * @param user_id id del usario de la medicion.
+     * @param latX lat.
+     * @param latY long.
+     *
+     */
     private void nuevaMedicion(int id, int tipo , int lectura, int user_id, double latX, double latY){
 
+        //instanciamos la logica
         FirebaseLogica firebaseLogica= new FirebaseLogica();
+        //string con el nombre de la coleccion donde vamos a guardar la medicion.
         String collection = "";
 
+        //si el tipo de medicion es 11 o 12
         if(tipo == 11){ //C02
+            //cambiamos nombre coleccion
             collection="Mediciones CO2";
         }else if (tipo == 12){ //TEMPERATURA
+            //cambiamos nombre coleccion
             collection="Mediciones temperatura";
         }
 
+        //llamamos al metodo que guarda la medicion y le pasamos los datos
         firebaseLogica.guardarMedicion(collection, id, lectura ,user_id, latX , latY);
     }
-
-    // --------------------------------------------------------------
-    // --------------------------------------------------------------
 } // class
 // -------------------------------------------------------------------------------------------------
-// -------------------------------------------------------------------------------------------------
-// -------------------------------------------------------------------------------------------------
-// -------------------------------------------------------------------------------------------------
+
