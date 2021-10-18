@@ -4,9 +4,11 @@ package com.example.gti_3a_kuzminandrey_sprint0.main;
 import java.util.Arrays;
 
 // -----------------------------------------------------------------------------------
-// @author: Jordi Bataller i Mascarell
+// @author: Andrey Kuzmin
 // -----------------------------------------------------------------------------------
 public class TramaIBeacon {
+
+    //atributos de la clase
     private byte[] prefijo = null; // 9 bytes
     private byte[] uuid = null; // 16 bytes
     private byte[] major = null; // 2 bytes
@@ -20,6 +22,10 @@ public class TramaIBeacon {
     private byte[] companyID = new byte[2]; // 2 bytes
     private byte iBeaconType = 0 ; // 1 byte
     private byte iBeaconLength = 0 ; // 1 byte
+
+    /**
+     * La descripción de get.... Getters de los atributos de la clase.
+     */
 
     // -------------------------------------------------------------------------------
     // -------------------------------------------------------------------------------
@@ -106,8 +112,6 @@ public class TramaIBeacon {
 
     } // ()
 } // class
-// -----------------------------------------------------------------------------------
-// -----------------------------------------------------------------------------------
 // -----------------------------------------------------------------------------------
 // -----------------------------------------------------------------------------------
 

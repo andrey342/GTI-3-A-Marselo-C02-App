@@ -22,9 +22,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GTI3AKuzminAndreySprint0">
         <activity
-            android:name=".main.Service.MainActivityService"
-            android:exported="true" />
-        <activity
             android:name=".main.MainActivity"
             android:exported="true">
             <intent-filter>

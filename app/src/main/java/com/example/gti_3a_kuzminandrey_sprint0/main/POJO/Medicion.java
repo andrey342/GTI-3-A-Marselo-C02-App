@@ -1,7 +1,15 @@
 package com.example.gti_3a_kuzminandrey_sprint0.main.POJO;
 
 import com.google.firebase.Timestamp;
+
+// -----------------------------------------------------------------------------------
+// @author: Andrey Kuzmin
+// -----------------------------------------------------------------------------------
+
+//POJO Medicion
 public class Medicion {
+
+    //atributos
     private int id;
     private Timestamp fecha;
     private int lectura;
@@ -9,8 +17,22 @@ public class Medicion {
     private double latX;
     private double latY;
 
+    /**
+     * La descripción de Medicion. Constuctor vacio.
+     */
     public Medicion() { }
 
+    /**
+     * La descripción de Medicion. Costructor con parametros
+     *
+     * @param id id de la medicion.
+     * @param fecha fecha de la medicion.
+     * @param lectura lectura de la medicion.
+     * @param user_id id del usario al que pertenece.
+     * @param latX direccion X.
+     * @param latY direccion Y.
+     *
+     */
     public Medicion(int id, Timestamp fecha, int lectura, int user_id, double latX, double latY) {
         this.id = id;
         this.fecha = fecha;
@@ -20,6 +42,15 @@ public class Medicion {
         this.latY = latY;
     }
 
+    /**
+     * La descripción de Medicion. Costructor con parametros
+     *
+     * @param fecha fecha de la medicion.
+     * @param lectura lectura de la medicion.
+     * @param latX direccion X.
+     * @param latY direccion Y.
+     *
+     */
     public Medicion(Timestamp fecha, int lectura, double latX, double latY) {
         this.fecha = fecha;
         this.lectura = lectura;
@@ -27,7 +58,11 @@ public class Medicion {
         this.latY = latY;
     }
 
-    //getters & setters
+    /**
+     *
+     * Getters & setters de todos los atributos del POJO.
+     *
+     */
 
     public int getId() {
         return id;
