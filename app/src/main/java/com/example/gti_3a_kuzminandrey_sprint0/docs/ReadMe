@@ -23,4 +23,8 @@ https://trello.com/invite/b/tqvHxuCU/b01d6526fafdc5cade3ccfdd9cae404f/gti-3a-kuz
 
 //------------ Información de la aplicación  ---------------------------
 
+Para que la aplicación funcione correctamente asegúrese de que los permisos de la aplicación estén concedidos.
+Para comprobar que el servicio de búsqueda de beacons funciona consulte el logcat.
+Es muy impórtate que en el móvil (preferiblemente no emulador) este activo el Bluetooth, el gps y el internet (este ultimo para Firebase).
+
 //---------------------------------------
