@@ -22,10 +22,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GTI3AKuzminAndreySprint0">
         <activity
-            android:name=".Main.Service.MainActivityService"
-            android:exported="true" />
-        <activity
-            android:name=".Main.MainActivity"
+            android:name=".main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,7 +31,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".Main.Service.ServicioEscuharBeacons" />
+        <service android:name=".main.Service.ServicioEscuharBeacons" />
     </application>
 
 </manifest>
